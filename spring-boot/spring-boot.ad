@@ -1,0 +1,36 @@
+= Spring Boot Testing
+
+== @SpringBootTest
+
+[source,java]
+@BootstrapWith(SpringBootTestContextBootstrapper.class)
+@ExtendWith(SpringExtension.class)
+public @interface SpringBootTest {
+
+=== SpringBootTestContextBootstrapper
+
+- Uses `SpringBootContextLoader` as the default context loader.
+- Automatically searches for a `@SpringBootConfiguration` when required.
+- Allows custom Environment getProperties(Class) to be defined.
+- Provides support for different webEnvironment modes.
+
+=== SpringBootContextLoader
+
+The loader supports both standard `MergedContextConfiguration` as well as `WebMergedContextConfiguration`.
+If `WebMergedContextConfiguration` is used the context will either use a mock servlet environment,
+or start the full embedded web server.
+
+If `@ActiveProfiles` are provided in the test class they will be used to create the application context.
+
+
+=== ConfigurationClassPostProcessor
+
+BeanFactoryPostProcessor used for bootstrapping processing of @Configuration classes.
+Registered by default when using <context:annotation-config/> or <context:component-scan/>.
+
+WARNING: wo wird dieser in Spring Boot aktiviert?
+
+?? es wird nach Kandidat mit Marker gesucht, geschieht innerhalb von refresh ??
+
+-> abbilden ohne Spring-Boot
+

@@ -1,0 +1,36 @@
+@startuml
+participant x
+box Spring Boot ApplicationTests
+    participant SpringBootTestContextBootstrapper
+    participant SpringBootContextLoader
+end box
+box Spring Boot
+    participant SpringApplication
+end box
+box Spring
+    participant GenericWebApplicationContext
+end box
+
+x -> SpringBootTestContextBootstrapper: processMergedContextConfiguration()
+note over SpringBootTestContextBootstrapper: scan nach @SpringBootConfiguration
+
+x -> SpringBootContextLoader: loadContext()
+
+activate SpringApplication
+SpringBootContextLoader -> SpringApplication: run()
+note over SpringApplication
+""  .   ____          _            __ _ _""
+"" /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \""
+""( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \""
+"" \\/  ___)| |_)| | | | | || (_| |  ) ) ) )""
+""  '  |____| .__|_| |_|_| |_\__, | / / / /""
+"" =========|_|==============|___/=/_/_/_/""
+"" :: Spring Boot ::        (v2.1.6.RELEASE)""
+end note
+
+SpringApplication -> SpringApplication: prepareContext()
+note right of SpringApplication: applyInitializers()
+
+SpringApplication -> GenericWebApplicationContext: refresh()
+note over SpringApplication: Started ApplicationTests in 1307.8 seconds (JVM running for 7906.949)
+@enduml
