@@ -1,2 +1,2 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-something.which.is.not.there
+#org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+#something.which.is.not.there

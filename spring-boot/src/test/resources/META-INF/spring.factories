@@ -1,0 +1,5 @@
+org.springframework.boot.env.EnvironmentPostProcessor=org.devll.samples.mock.CustomizeEnv
+
+#org.springframework.boot.autoconfigure.EnableAutoConfiguration=bla
+
+org.springframework.test.context.ContextCustomizerFactory=org.devll.samples.mock.MockServerTestCustomizerFactory

@@ -29,7 +29,11 @@ note over SpringApplication
 end note
 
 SpringApplication -> SpringApplication: prepareContext()
-note right of SpringApplication: applyInitializers()
+note right of SpringApplication
+    applyInitializers()
+    jeder ContextCustomizer wir zum ApplicationContextInitializer via ContextCustomizerAdapter
+    -> contextCustomizer entspricht contextInitializer
+end note
 
 SpringApplication -> GenericWebApplicationContext: refresh()
 note over SpringApplication: Started ApplicationTests in 1307.8 seconds (JVM running for 7906.949)
