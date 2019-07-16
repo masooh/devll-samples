@@ -1,5 +1,7 @@
 package org.devll.samples.springboot;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.SpringBootConfiguration;
@@ -11,6 +13,7 @@ import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.PropertySources;
 import org.springframework.core.env.PropertySourcesPropertyResolver;
+import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.mock.env.MockPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.TestPropertySourceUtils;
@@ -64,5 +67,21 @@ class SpringBootTestTests {
 		System.out.println(propertyResolver.getProperty("random.int")); // noInt, due to order of propertySources
 		System.out.println(propertyResolver.getProperty("random.value"));
 		System.out.println(propertyResolver.getProperty("any"));
+	}
+
+	@Test
+	void springFactoriesLoader() {
+		// typisierte Liste kommt zurück -> müssen alle assigned werden können
+		List<SpringFactoryClass> factories = SpringFactoriesLoader.loadFactories(SpringFactoryClass.class, null);
+
+		System.out.println(factories);
+	}
+
+	static class SpringFactoryClass {
+
+	}
+
+	static class SpringFactoryObject extends SpringFactoryClass {
+
 	}
 }

@@ -22,6 +22,16 @@ or start the full embedded web server.
 
 If `@ActiveProfiles` are provided in the test class they will be used to create the application context.
 
+=== AnnotatedClassFinder
+
+Sucht nach SpringBootConfiguration
+
+Basis: Package der Testklasse, dann recursiv parent package
+
+[source, java]
+new AnnotatedClassFinder(SpringBootConfiguration.class)
+				.findFromClass(mergedConfig.getTestClass())
+
 
 === ConfigurationClassPostProcessor
 
@@ -33,3 +43,49 @@ WARNING: wo wird dieser in Spring Boot aktiviert?
 ?? es wird nach Kandidat mit Marker gesucht, geschieht innerhalb von refresh ??
 
 -> abbilden ohne Spring-Boot
+
+=== ClassPathScanningCandidateComponentProvider
+
+hier ist Logik von Config Slicing
+
+
+org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider.scanCandidateComponents
+
+includeFilters + excludeFilters, die vermutlich von @WebMvcTest und anderem kommen
+
+innerhalb von
+org.springframework.test.context.support.AbstractTestContextBootstrapper.buildTestContext
+
+=== ClassPathBeanDefinitionScanner
+
+sucht nach @Component, @Repository, @Service, or @Controller
+
+org.springframework.context.annotation.ComponentScanAnnotationParser.parse
+
+class = com.unitedinternet.id.op.frontend.base.TestApplication
+componentScanAttributes
+
+[source,groovy]
+basePackages = (basePackages + basePackageClasses) ?: ClassUtils.getPackageName(declaringClass)
+
+
+Interessant Logs
+
+[source]
+16:56:46.805 [main] DEBUG org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider - Identified candidate component class: file [/home/martin/repos/idop/frontend-base/target/test-classes/com/unitedinternet/id/op/frontend/base/TestApplication.class]
+2019-07-16 17:07:48.267 DEBUG 8610 --- [           main] o.s.c.a.ClassPathBeanDefinitionScanner   : Identified candidate component class: file [/home/martin/repos/idop/frontend-base/target/test-classes/com/unitedinternet/id/op/frontend/base/web/TestModelProvider.class]
+2019-07-16 17:07:48.619 DEBUG 8610 --- [           main] o.s.c.a.ClassPathBeanDefinitionScanner   : Identified candidate component class: file [/home/martin/repos/idop/frontend-base/target/classes/com/unitedinternet/id/op/frontend/base/config/WebMvcConfiguration.class]
+2019-07-16 17:07:49.361 DEBUG 8610 --- [           main] o.s.c.a.ClassPathBeanDefinitionScanner   : Identified candidate component class: file [/home/martin/repos/idop/frontend-base/target/classes/com/unitedinternet/id/op/frontend/base/security/SessionMaxAgeRequestFilter.class]
+2019-07-16 17:07:49.842 DEBUG 8610 --- [           main] o.s.c.a.ClassPathBeanDefinitionScanner   : Identified candidate component class: file [/home/martin/repos/idop/frontend-base/target/classes/com/unitedinternet/id/op/frontend/base/utils/CountryLocalizer.class]
+2019-07-16 17:07:49.933 DEBUG 8610 --- [           main] o.s.c.a.ClassPathBeanDefinitionScanner   : Identified candidate component class: file [/home/martin/repos/idop/frontend-base/target/classes/com/unitedinternet/id/op/frontend/base/web/ExceptionHandlerController.class]
+
+=== SpringFactoriesLoader
+
+Lädt `META-INF/spring.factories`
+
+[source, java]
+SpringFactoriesLoader.loadFactories(SpringFactoryClass.class, null)
+
+kann Klasse oder Interface sein, values müssen dem key assigned werden können
+[source, properties]
+org.devll.samples.springboot.SpringBootTestTests$SpringFactoryClass=org.devll.samples.springboot.SpringBootTestTests.SpringFactoryObject

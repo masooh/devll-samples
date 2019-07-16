@@ -12,7 +12,12 @@ box Spring
 end box
 
 x -> SpringBootTestContextBootstrapper: processMergedContextConfiguration()
-note over SpringBootTestContextBootstrapper: scan nach @SpringBootConfiguration
+SpringBootTestContextBootstrapper -> SpringBootTestContextBootstrapper: getOrFindConfigurationClasses()
+note over SpringBootTestContextBootstrapper
+    // Scan nach @SpringBootConfiguration
+    new AnnotatedClassFinder(SpringBootConfiguration.class)
+    				.findFromClass(mergedConfig.getTestClass())
+end note
 
 x -> SpringBootContextLoader: loadContext()
 
@@ -28,6 +33,13 @@ note over SpringApplication
 "" :: Spring Boot ::        (v2.1.6.RELEASE)""
 end note
 
+SpringApplication -> SpringApplication: prepareEnvironment()
+activate ApplicationEnvironmentPreparedEvent
+SpringApplication -> ApplicationEnvironmentPreparedEvent
+ApplicationEnvironmentPreparedEvent -> ConfigFileApplicationListener: onApplicationEnvironmentPreparedEvent()
+ConfigFileApplicationListener -> SpringFactoriesLoader: loadFactories(EnvironmentPostProcessor)
+
+
 SpringApplication -> SpringApplication: prepareContext()
 note right of SpringApplication
     applyInitializers()
@@ -36,5 +48,6 @@ note right of SpringApplication
 end note
 
 SpringApplication -> GenericWebApplicationContext: refresh()
+GenericWebApplicationContext -> GenericWebApplicationContext: invokeBeanFactoryPostProcessors()
 note over SpringApplication: Started ApplicationTests in 1307.8 seconds (JVM running for 7906.949)
 @enduml

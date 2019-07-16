@@ -8,6 +8,6 @@ public class MockServerCustomizer implements ContextCustomizer {
     @Override
     public void customizeContext(ConfigurableApplicationContext context, MergedContextConfiguration mergedConfig) {
 
-        context.getBeanFactory().
+
     }
 }
