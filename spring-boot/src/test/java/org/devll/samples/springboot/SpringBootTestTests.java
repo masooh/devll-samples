@@ -1,22 +1,17 @@
 package org.devll.samples.springboot;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.env.RandomValuePropertySource;
 import org.springframework.boot.test.context.AnnotatedClassFinder;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ConfigurationClassPostProcessor;
+import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.env.MutablePropertySources;
-import org.springframework.core.env.PropertySource;
-import org.springframework.core.env.PropertySources;
 import org.springframework.core.env.PropertySourcesPropertyResolver;
 import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.mock.env.MockPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.support.TestPropertySourceUtils;
+
+import java.util.List;
 
 class SpringBootTestTests {
 
@@ -75,6 +70,16 @@ class SpringBootTestTests {
 		List<SpringFactoryClass> factories = SpringFactoriesLoader.loadFactories(SpringFactoryClass.class, null);
 
 		System.out.println(factories);
+	}
+
+	@Test
+	void classPathBeanDefinitionScanner() {
+		GenericApplicationContext context = new GenericApplicationContext();
+		ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(context);
+		System.out.println(String.join("\n", context.getBeanDefinitionNames()));
+		int registeredBeans = scanner.scan("org.devll.samples.springboot");
+		System.out.println(registeredBeans);
+		System.out.println(String.join("\n", context.getBeanDefinitionNames()));
 	}
 
 	static class SpringFactoryClass {

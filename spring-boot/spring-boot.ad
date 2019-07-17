@@ -48,13 +48,27 @@ WARNING: wo wird dieser in Spring Boot aktiviert?
 
 hier ist Logik von Config Slicing
 
+useDefaultFilters - whether to register the default filters for the @Component, @Repository, @Service, and @Controller stereotype annotations
+
+new ClassPathScanningCandidateComponentProvider(boolean useDefaultFilters, Environment environment)
+
 
 org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider.scanCandidateComponents
 
 includeFilters + excludeFilters, die vermutlich von @WebMvcTest und anderem kommen
 
+isCandidateComponent()
+erst wird exclude geprüft, dann include
+-> es muss in include sein, exclude ist wichtiger
+
 innerhalb von
 org.springframework.test.context.support.AbstractTestContextBootstrapper.buildTestContext
+
+=== @WebMvcTest
+[source, java]
+@TypeExcludeFilters(WebMvcTypeExcludeFilter.class)
+
+ControllerAdvice in include enthalten
 
 === ClassPathBeanDefinitionScanner
 
