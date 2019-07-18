@@ -2,6 +2,7 @@ package org.devll.samples.springboot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.env.RandomValuePropertySource;
 import org.springframework.boot.test.context.AnnotatedClassFinder;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
@@ -70,7 +71,11 @@ class SpringBootTestTests {
 		List<SpringFactoryClass> factories = SpringFactoriesLoader.loadFactories(SpringFactoryClass.class, null);
 
 		System.out.println(factories);
-	}
+
+		// geht wohl nicht für Annotations
+        List<EnableAutoConfiguration> enableAutoConfigurations = SpringFactoriesLoader.loadFactories(EnableAutoConfiguration.class, null);
+        System.out.println(enableAutoConfigurations);
+    }
 
 	@Test
 	void classPathBeanDefinitionScanner() {
@@ -80,6 +85,11 @@ class SpringBootTestTests {
 		int registeredBeans = scanner.scan("org.devll.samples.springboot");
 		System.out.println(registeredBeans);
 		System.out.println(String.join("\n", context.getBeanDefinitionNames()));
+
+		/*
+		findet @Configuration und @Service -> Mischung auf Config und Beans
+		Bean in Config ist nicht gefunden, kommt wohl später
+		 */
 	}
 
 	static class SpringFactoryClass {
