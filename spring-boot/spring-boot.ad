@@ -36,7 +36,7 @@ new AnnotatedClassFinder(SpringBootConfiguration.class)
 === ConfigurationClassPostProcessor
 
 BeanFactoryPostProcessor used for bootstrapping processing of @Configuration classes.
-Registered by default when using <context:annotation-config/> or <context:component-scan/>.
+Registered by default when using `<context:annotation-config/>` or `<context:component-scan/>`.
 
 WARNING: wo wird dieser in Spring Boot aktiviert?
 
@@ -50,27 +50,99 @@ hier ist Logik von Config Slicing
 
 useDefaultFilters - whether to register the default filters for the @Component, @Repository, @Service, and @Controller stereotype annotations
 
+[source, java]
+----
 new ClassPathScanningCandidateComponentProvider(boolean useDefaultFilters, Environment environment)
-
+----
 
 org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider.scanCandidateComponents
 
 includeFilters + excludeFilters, die vermutlich von @WebMvcTest und anderem kommen
 
-isCandidateComponent()
-erst wird exclude geprüft, dann include
--> es muss in include sein, exclude ist wichtiger
+`isCandidateComponent()`
+
+1. must not be in exludeFilters
+1. must be in inlcudeFilters (default `@Component, @Named, @ManagedBean`)
+1. `isConditionMatch()`, see `org.springframework.boot.autoconfigure.condition.OnBeanCondition.getMatchOutcome`
 
 innerhalb von
 org.springframework.test.context.support.AbstractTestContextBootstrapper.buildTestContext
+
+WARNING: You need to be very careful about the order in which bean definitions are added, as these conditions are evaluated based on what has been processed so far. For this reason, we recommend using only `@ConditionalOnBean` and `@ConditionalOnMissingBean` annotations on auto-configuration classes (since these are guaranteed to load after any user-defined bean definitions have been added). https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-developing-auto-configuration.html#boot-features-bean-conditions[Spring Boot - Bean Conditions]
 
 === @WebMvcTest
 [source, java]
 @TypeExcludeFilters(WebMvcTypeExcludeFilter.class)
 
+[source, java]
+----
+WebMvcTypeExcludeFilter {
+    DEFAULT_INCLUDES =
+    @ControllerAdvice
+    @JsonComponent
+    WebMvcConfigurer
+    javax.servlet.Filter
+    FilterRegistrationBean
+    DelegatingFilterProxyRegistrationBean
+    HandlerMethodArgumentResolver
+    HttpMessageConverter
+    ErrorAttributes
+    Converter
+    GenericConverter
+
+    protected Set<Class<?>> getDefaultIncludes() {
+        if (this.annotation.secure()) {
+            if (ObjectUtils.isEmpty(this.annotation.controllers())) {
+                return DEFAULT_INCLUDES_SECURITY_CONFIGURER_AND_CONTROLLER;
+            }
+            return DEFAULT_INCLUDES_AND_SECURITY_CONFIGURER;
+        }
+        if (ObjectUtils.isEmpty(this.annotation.controllers())) {
+            // DEFAULT_INCLUDES + @Controller
+            return DEFAULT_INCLUDES_AND_CONTROLLER;
+        }
+        return DEFAULT_INCLUDES;
+    }
+}
+----
+
+[source,java]
+----
+protected boolean defaultInclude(MetadataReader metadataReader, MetadataReaderFactory metadataReaderFactory) throws IOException {
+    for (Class<?> include : getDefaultIncludes()) {
+        if (isTypeOrAnnotated(metadataReader, metadataReaderFactory, include)) {
+            return true;
+        }
+    }
+    // !!! warum ist componentInclude nur aktiv, falls default include aktiv?
+    for (Class<?> component : getComponentIncludes()) {
+        if (isTypeOrAnnotated(metadataReader, metadataReaderFactory, component)) {
+            return true;
+        }
+    }
+    return false;
+}
+----
+
 ControllerAdvice in include enthalten
 
-=== ClassPathBeanDefinitionScanner
+Entscheidung in org.springframework.boot.context.TypeExcludeFilter.match
+
+
+
+[plantuml]
+----
+TypeExcludeFilter <|-- AnnotationCustomizableTypeExcludeFilter
+AnnotationCustomizableTypeExcludeFilter <|-- WebMvcTypeExcludeFilter
+class AnnotationCustomizableTypeExcludeFilter {
+    + match()
+    ..
+    checks if class is included and not excluded
+}
+----
+
+
+=== ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateComponentProvider
 
 sucht nach @Component, @Repository, @Service, or @Controller
 
@@ -82,16 +154,10 @@ componentScanAttributes
 [source,groovy]
 basePackages = (basePackages + basePackageClasses) ?: ClassUtils.getPackageName(declaringClass)
 
+Breakpoints: org.springframework.context.annotation.ClassPathBeanDefinitionScanner.doScan
 
-Interessant Logs
-
-[source]
-16:56:46.805 [main] DEBUG org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider - Identified candidate component class: file [/home/martin/repos/idop/frontend-base/target/test-classes/com/unitedinternet/id/op/frontend/base/TestApplication.class]
-2019-07-16 17:07:48.267 DEBUG 8610 --- [           main] o.s.c.a.ClassPathBeanDefinitionScanner   : Identified candidate component class: file [/home/martin/repos/idop/frontend-base/target/test-classes/com/unitedinternet/id/op/frontend/base/web/TestModelProvider.class]
-2019-07-16 17:07:48.619 DEBUG 8610 --- [           main] o.s.c.a.ClassPathBeanDefinitionScanner   : Identified candidate component class: file [/home/martin/repos/idop/frontend-base/target/classes/com/unitedinternet/id/op/frontend/base/config/WebMvcConfiguration.class]
-2019-07-16 17:07:49.361 DEBUG 8610 --- [           main] o.s.c.a.ClassPathBeanDefinitionScanner   : Identified candidate component class: file [/home/martin/repos/idop/frontend-base/target/classes/com/unitedinternet/id/op/frontend/base/security/SessionMaxAgeRequestFilter.class]
-2019-07-16 17:07:49.842 DEBUG 8610 --- [           main] o.s.c.a.ClassPathBeanDefinitionScanner   : Identified candidate component class: file [/home/martin/repos/idop/frontend-base/target/classes/com/unitedinternet/id/op/frontend/base/utils/CountryLocalizer.class]
-2019-07-16 17:07:49.933 DEBUG 8610 --- [           main] o.s.c.a.ClassPathBeanDefinitionScanner   : Identified candidate component class: file [/home/martin/repos/idop/frontend-base/target/classes/com/unitedinternet/id/op/frontend/base/web/ExceptionHandlerController.class]
+Interessant Logs mittels
+org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider und ClassPathBeanDefinitionScanner on DEBUG
 
 === SpringFactoriesLoader
 
