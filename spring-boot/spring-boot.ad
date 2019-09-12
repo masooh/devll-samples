@@ -169,3 +169,46 @@ SpringFactoriesLoader.loadFactories(SpringFactoryClass.class, null)
 kann Klasse oder Interface sein, values müssen dem key assigned werden können
 [source, properties]
 org.devll.samples.springboot.SpringBootTestTests$SpringFactoryClass=org.devll.samples.springboot.SpringBootTestTests.SpringFactoryObject
+
+=== @AutoConfigureMockMvc
+
+Activates especially `MockMvcAutoConfiguration`.
+
+[source,properties]
+.spring.factories
+----
+# AutoConfigureMockMvc auto-configuration imports
+org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc=\
+org.springframework.boot.test.autoconfigure.web.servlet.MockMvcAutoConfiguration,\
+org.springframework.boot.test.autoconfigure.web.servlet.MockMvcSecurityAutoConfiguration,\
+org.springframework.boot.test.autoconfigure.web.servlet.MockMvcWebClientAutoConfiguration,\
+org.springframework.boot.test.autoconfigure.web.servlet.MockMvcWebDriverAutoConfiguration
+----
+
+`MockMvcAutoConfiguration` modifies the root web application context (searches in parent if child is not already one).
+
+In combination with @ContextHierarchy only last child will be enhanced:
+
+[quote, Phillip Webb 18.04.17 22:47, Support @SpringBootTest with @ContextHierarchy]
+Update SpringBootTestContextBootstrapper to detect `@ContextHierarchy` annotations so that only the last child creates a `WebApplicationContext`.
+
+=== @ContextHiearchy
+
+Handling done in
+
+org.springframework.test.context.support.AbstractTestContextBootstrapper.buildMergedContextConfiguration()
+
+=== Context Caching with ContextHiearchy
+
+Advantage only for @ConditionalOnMissingBean
+
+AutoConfiguration class itself is duplicated i.e.
+
+MockMvcSecurityAutoConfiguration
+
+TIP: why!!!, how is this created?
+
+=== Context Caching
+
+Done via `org.springframework.test.context.CacheAwareContextLoaderDelegate`
+

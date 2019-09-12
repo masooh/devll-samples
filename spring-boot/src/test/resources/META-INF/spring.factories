@@ -8,4 +8,6 @@ org.springframework.test.context.ContextCustomizerFactory=org.devll.samples.mock
 org.springframework.test.context.TestExecutionListener=org.devll.samples.mock.MockServerTestExecutionListener
 
 # kann Klasse oder Interface sein, values müssen dem key assigned werden können
-org.devll.samples.springboot.SpringBootTestTests$SpringFactoryClass=org.devll.samples.springboot.SpringBootTestTests.SpringFactoryObject
+org.devll.samples.springboot.SpringBootTestTests$SpringFactoryClass=\
+org.devll.samples.springboot.SpringBootTestTests.SpringFactoryObject,\
+org.devll.samples.springboot.SpringBootTestTests.SpringFactoryObject2

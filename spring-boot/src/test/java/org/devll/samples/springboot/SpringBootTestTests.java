@@ -12,6 +12,7 @@ import org.springframework.core.env.PropertySourcesPropertyResolver;
 import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.mock.env.MockPropertySource;
 
+import java.util.Arrays;
 import java.util.List;
 
 class SpringBootTestTests {
@@ -97,6 +98,10 @@ class SpringBootTestTests {
 	}
 
 	static class SpringFactoryObject extends SpringFactoryClass {
+
+	}
+
+	static class SpringFactoryObject2 extends SpringFactoryClass {
 
 	}
 }
