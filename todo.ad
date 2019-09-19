@@ -1,0 +1,11 @@
+= TODO
+
+- Difference between, first makes more, but how much, is it just a wrapper?
+[source,java]
+----
+@SpringBootTest(Config.class)
+// vs
+@ContextConfiguration(Config.class)
+----
+
+
