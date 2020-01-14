@@ -1,19 +1,21 @@
 package org.devll.samples.spring;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-public class Main {
+class InjectionManualTest {
 
-    public static void main(String[] args) {
+    @Test
+    void bookIsInContext() {
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
 
-//        applicationContext.register(Config.class);
-
-        applicationContext.scan("org.devll.samples.spring");
+        applicationContext.register(Config.class);
         applicationContext.refresh();
 
         Book book = (Book) applicationContext.getBean("book");
 
-        System.out.println(book);
+        assertNotNull(book);
     }
 }
