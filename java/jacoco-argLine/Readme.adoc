@@ -1,0 +1,3 @@
+== JaCoCo and the Surefire argLine
+
+This project contains the samples for http://devll.org/blog/2020/java/jacoco-argline.html.
