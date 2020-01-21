@@ -1,4 +1,4 @@
 # devll-samples
 
-This repository contains the code samples for http://devll.org/[devLL's Blog]. 
+This repository contains the code samples for https://devll.org/[devLL's Blog].
 Best is to start there and follow the links to the specific folders belonging to the blog posts.
