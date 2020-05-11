@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/devll-samples.iml" filepath="$PROJECT_DIR$/.idea/devll-samples.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/jacoco-argLine/jacoco-argLine.iml" filepath="$PROJECT_DIR$/java/jacoco-argLine/jacoco-argLine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spring/spring-profiles/spring-profiles.iml" filepath="$PROJECT_DIR$/spring/spring-profiles/spring-profiles.iml" />
     </modules>
   </component>
 </project>
