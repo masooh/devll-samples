@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/kotlin/design-pattern/design-pattern.iml" filepath="$PROJECT_DIR$/kotlin/design-pattern/design-pattern.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/devll-samples.iml" filepath="$PROJECT_DIR$/.idea/devll-samples.iml" />
-      <module fileurl="file://$PROJECT_DIR$/java/jacoco-argLine/jacoco-argLine.iml" filepath="$PROJECT_DIR$/java/jacoco-argLine/jacoco-argLine.iml" />
     </modules>
   </component>
 </project>
