@@ -4,9 +4,9 @@ sealed class Drink {
     fun prepareDrink() {
         println("prepare ${this.javaClass.simpleName} ...")
 
-        cookWater()
+        boilWater()
         addIngredient()
-        fillCup()
+        fillWaterInCup()
 
         println("... finished\n")
     }
@@ -14,16 +14,16 @@ sealed class Drink {
     /** template method */
     protected abstract fun addIngredient()
 
-    private fun cookWater() = println("cook water")
-    private fun fillCup() = println("fill cup")
+    private fun boilWater() = println("boil water")
+    private fun fillWaterInCup() = println("fill cup with hot water")
 }
 
 object Coffee : Drink() {
-    override fun addIngredient() = println("add sugar and milk")
+    override fun addIngredient() = println("insert coffee powder")
 }
 
 object Tea : Drink() {
-    override fun addIngredient() = println("add lemon")
+    override fun addIngredient() = println("insert tea leaves")
 }
 
 
